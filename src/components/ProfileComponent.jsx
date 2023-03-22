@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Grid from '@mui/material/Grid';
@@ -6,11 +6,14 @@ import { Typography ,Box, Card, CardContent, TextField, Button } from "@mui/mate
 
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
-function RegisterComponent() {
 
+
+
+function ProfileComponent({setIsLoggedIn , isLoggedIn}) {
+
+  
   const navigate = useNavigate()
     const MySwal = withReactContent(Swal)
-
     const [inputs, setInputs] = useState({});
 
     // ตรวจสอบ password must be at least 8 characters long, contain at least one lowercase letter, one uppercase letter, and one number
@@ -35,6 +38,48 @@ function RegisterComponent() {
       return true;
     };
 
+    useEffect(()=>{
+
+      const token = localStorage.getItem("token");
+      var myHeaders = new Headers();
+      myHeaders.append("Authorization", "Token " +token);
+      myHeaders.append("Content-Type", 'application/json');
+
+      var requestOptions = {
+        method: 'GET',
+        headers: myHeaders,
+        redirect: 'follow'
+        };
+        console.log(token)
+
+        fetch("http://192.168.1.96:8000/profile", requestOptions)
+      .then((response) => response.json())
+      .then((result) => {
+        if (result.status === "ok") {
+            console.log(result)
+          } else if (result.status === "forbidden") {
+            MySwal.fire({
+              html: <i>{result.message}</i>,
+              icon: 'error'
+            }).then((value) => {
+              navigate('/product')
+              
+            })
+          }
+          console.log(result);
+          setInputs(result)
+      })
+      .catch((error) => console.log("error", error));
+
+
+    },[])
+
+    const logout = () => {
+      localStorage.removeItem("token");
+      localStorage.removeItem("check");
+      navigate("/");
+      setIsLoggedIn(false)
+    };
 
     const handleChange = (event) => {
         const name = event.target.name;
@@ -64,9 +109,10 @@ function RegisterComponent() {
           })
           return;
         }
-
+        // ตรวจสอบ password ต้องเหมือนกัน
         if (inputs.password !== inputs.confpwd) {
           MySwal.fire({
+            // html: <i>Password and Confirm Password must be the same.</i>,
             html: <i>รหัสผ่านและยืนยันรหัสผ่านต้องเหมือนกัน</i>,
             icon: 'warning'
           });
@@ -90,7 +136,7 @@ function RegisterComponent() {
           body: raw,
           redirect: 'follow'
         };
-
+          
         fetch("http://192.168.1.96:8000/test", requestOptions)
           .then(response => response.json())
           .then(result => {
@@ -99,7 +145,7 @@ function RegisterComponent() {
                     html: <i>{result.message}</i>,
                     icon: 'success'
                 }).then((value) => {
-                    navigate('/')
+                    navigate('/product')
                 })
             } else {
                 MySwal.fire({
@@ -114,10 +160,18 @@ function RegisterComponent() {
   return (
     <Box sx={{marginTop:"2rem"}}>
     <Grid container justifyContent="center" spacing={1} style={{margin:"auto"}} >
-      <Grid item xs={12} ms={6} md={4} >
-      <Card sx={{marginTop:"40px"  }} >
-      <CardContent>
-      <Typography  variant="h4" align="center"  >Register</Typography>
+      <Grid item xs={12} ms={6} md={6} >
+      <Card sx={{marginTop:"3rem"  }}>
+      <CardContent >
+      <Typography  
+        variant="h5" 
+        marginBottom="1rem"
+        // marginTop="2rem"
+        // align="center"
+        // textAlign="center"  
+        >
+          คุณ : {inputs.first_name}
+        </Typography>
     <form onSubmit={handleSubmit}>
         <TextField 
           label="Email :"
@@ -136,8 +190,10 @@ function RegisterComponent() {
           type="password"
           value={inputs.password || ""} 
           onChange={handleChange}
-          fullWidth
+          // fullWidth
+          style={{ width: '50%' }}
           margin="dense"
+          
           />
          <TextField 
           label="Confirm Password :"
@@ -146,17 +202,19 @@ function RegisterComponent() {
           type="password"
           value={inputs.confpwd || ""} 
           onChange={handleChange}
-          fullWidth
+          // fullWidth
+          style={{ width: '50%' }}
           margin="dense"
-          />
-        <TextField 
+          /> 
+          <TextField 
           label="First Name :"
           variant="outlined"
           name="first_name"
           type="text"
           value={inputs.first_name || ""} 
           onChange={handleChange}
-          fullWidth
+          style={{ width: '50%' }}
+          // fullWidth
           margin="dense"
         />
         <TextField 
@@ -166,9 +224,11 @@ function RegisterComponent() {
           type="text"
           value={inputs.last_name || ""} 
           onChange={handleChange}
-          fullWidth
+          style={{ width: '50%' }}
+          // fullWidth
           margin="dense"
         />
+       
         <TextField 
           label="Telephone Number :"
           variant="outlined"
@@ -179,7 +239,7 @@ function RegisterComponent() {
           fullWidth
           margin="dense"
         />
-        <Button variant="contained" color="primary" fullWidth type="submit" sx={{ marginTop: "10px" }}>Login</Button>
+        <Button variant="contained" color="primary" fullWidth onClick={()=>logout()} sx={{ marginTop: "10px" }}>LogOut</Button>
     </form>
         </CardContent>
       </Card>
@@ -189,4 +249,4 @@ function RegisterComponent() {
   )
 }
 
-export default RegisterComponent
+export default ProfileComponent

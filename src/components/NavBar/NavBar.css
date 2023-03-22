@@ -1,0 +1,13 @@
+.css-ahj2mt-MuiTypography-root:hover {
+cursor: pointer;
+}
+.css-1clzr65-MuiButtonBase-root-MuiButton-root , .css-1y3seza-MuiButtonBase-root-MuiButton-root {
+    background-color: rgb(42, 145, 241) ;
+    color: #fff;
+    border-radius:;
+}
+.css-1clzr65-MuiButtonBase-root-MuiButton-root:hover , .css-1y3seza-MuiButtonBase-root-MuiButton-root:hover {
+    background-color: rgb(224, 229, 229);
+    color: black;
+}
+
