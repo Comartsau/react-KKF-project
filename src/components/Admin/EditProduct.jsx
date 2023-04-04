@@ -40,6 +40,7 @@ function EditProduct() {
 
   const onSubmit = async (e) => {
     e.preventDefault();
+    console.log('test'+id);
 
     // ตรวจสอบให้ใส่รูปภาพ ห้ามไม่ใส่
 

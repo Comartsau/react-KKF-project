@@ -1,11 +1,46 @@
-// import React from 'react'
-import axios from 'axios'
 import * as React from 'react';
 
 import { Button, FormControl, FormGroup,TextField, Typography } from '@mui/material'
 import { useState} from 'react'
 import { useNavigate } from 'react-router-dom'
 import { createProduct } from '../../service/api';
+
+
+async function resizeImage(file, maxWidth, maxHeight) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.src = URL.createObjectURL(file);
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      let width = img.width;
+      let height = img.height;
+
+      if (width > height) {
+        if (width > maxWidth) {
+          height *= maxWidth / width;
+          width = maxWidth;
+        }
+      } else {
+        if (height > maxHeight) {
+          width *= maxHeight / height;
+          height = maxHeight;
+        }
+      }
+      canvas.width = width;
+      canvas.height = height;
+      ctx.drawImage(img, 0, 0, width, height);
+
+      canvas.toBlob((blob) => {
+        resolve(new File([blob], file.name, { type: file.type, lastModified: new Date() }));
+      }, file.type);
+    };
+    img.onerror = () => {
+      reject(new Error('Failed to load image'));
+    };
+  });
+}
+
 
 const initialValues = {
     product_name: "" ,
@@ -40,8 +75,12 @@ function CreateProduct({handleCloseModal1}) {
         alert("Please upload a valid image file (JPEG, PNG, or GIF).");
         return;
       }
+
+      const resizedImage = await resizeImage(productImage, 400, 400); // ตัวอย่างขนาดภาพ 800x800
+
+
       // เรียกผ่าน api.js
-      const response = await createProduct(product, productImage);
+      const response = await createProduct(product, resizedImage);
        console.log(response);
 
 
@@ -130,7 +169,7 @@ function CreateProduct({handleCloseModal1}) {
           value={product.product_price}
         />
       </FormControl>
-      <FormControl >
+      {/* <FormControl >
       <TextField
           id="outlined-multiline-flexible"
           type="number"
@@ -141,7 +180,7 @@ function CreateProduct({handleCloseModal1}) {
           name="product_stock"
           value={product.product_stock}
         />
-      </FormControl>
+      </FormControl> */}
       <Button variant='contained' sx={{marginTop:"10px"}} onClick={()=>addProductDetail()}>Add Product</Button>
     </FormGroup>
     </div>

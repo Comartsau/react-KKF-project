@@ -10,6 +10,22 @@ import * as React from 'react';
 
 import Modal from '@mui/material/Modal';
 
+
+import Drawer from '@mui/material/Drawer';
+import List from '@mui/material/List';
+import Divider from '@mui/material/Divider';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import InboxIcon from '@mui/icons-material/MoveToInbox';
+import MailIcon from '@mui/icons-material/Mail';
+
+
+
+
+
+
 const style = {
   position: 'absolute',
   top: '50%',
@@ -23,6 +39,60 @@ const style = {
 };
 
 function NavBar({setIsLoggedIn , isLoggedIn}) {
+
+  const [state, setState] = React.useState({
+    top: false,
+    left: false,
+    bottom: false,
+    right: false,
+  });
+
+
+  const toggleDrawer = (anchor, open) => (event) => {
+    if (event.type === 'keydown' && (event.key === 'Tab' || event.key === 'Shift')) {
+      return;
+    }
+
+    setState({ ...state, [anchor]: open });
+  };
+
+  const list = (anchor) => (
+    <Box
+      sx={{ width: anchor === 'top' || anchor === 'bottom' ? 'auto' : 250 }}
+      role="presentation"
+      onClick={toggleDrawer(anchor, false)}
+      onKeyDown={toggleDrawer(anchor, false)}
+    >
+      <List>
+        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+          <ListItem key={text} disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+              </ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+      <Divider />
+      {/* <List>
+        {['All mail', 'Trash', 'Spam'].map((text, index) => (
+          <ListItem key={text} disablePadding>
+            <ListItemButton>
+              <ListItemIcon>
+                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+              </ListItemIcon>
+              <ListItemText primary={text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List> */}
+    </Box>
+  );
+
+
+
 
   const [open, setOpen] = React.useState(false);
   const [check,setcheck] = useState('1')
@@ -45,13 +115,13 @@ function NavBar({setIsLoggedIn , isLoggedIn}) {
 
   const PAGES = check === '1' ? 
     [
-        { title:"Admin Home" ,   path: "adminhome" },
-        { title:"Create Product", path: "/createproduct" },
+        { title:"ข้อมูลสินค้า" ,   path: "adminhome" },
+        { title:"นำเข้าสินค้า", path: "/addstock" },
 
     ] 
     : 
     [
-        { title:"Hot job" ,path: "hotjob" },
+        { title:"Product" ,path: "product" },
         { title:"Search job", path: "searchjob" },
         { title:"Internship", path: "internship" },
         { title:"Open role", path: "openrole" },
@@ -82,6 +152,8 @@ function NavBar({setIsLoggedIn , isLoggedIn}) {
 
   return (
     <>
+
+
     <AppBar>
       
       <Toolbar >
@@ -99,6 +171,21 @@ function NavBar({setIsLoggedIn , isLoggedIn}) {
         ): (
           <>
           <Typography onClick={()=>navigate('/')}>MyApp2 </Typography>
+
+          <div>
+      {['left'].map((anchor) => (
+        <React.Fragment key={anchor}>
+          <Button style={{color:"white"}} onClick={toggleDrawer(anchor, true)}>{anchor}</Button>
+          <Drawer
+            anchor={anchor}
+            open={state[anchor]}
+            onClose={toggleDrawer(anchor, false)}
+          >
+            {list(anchor)}
+          </Drawer>
+        </React.Fragment>
+      ))}
+    </div>
           
           <Tabs 
           textColor="inherit" 

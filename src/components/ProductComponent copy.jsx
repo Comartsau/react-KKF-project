@@ -157,12 +157,7 @@ function ProductComponent() {
 
   const calculateDiscountedTotal = () => {
     const total = calculateTotal();
-
-    // ส่วนลดเป็น %
-    // const discountAmount = (total * discount) / 100;
-
-    // ส่วนลดเป็นจำนวน
-    const discountAmount = (discount);
+    const discountAmount = (total * discount) / 100;
     const discountedTotal = total - discountAmount;
     const vatAmount = (discountedTotal * vat) / 100;
     return parseFloat((discountedTotal + vatAmount).toFixed(2));
@@ -186,7 +181,7 @@ function ProductComponent() {
         alert("คำสั่งซื้อสินค้าของคุณถูกยืนยันแล้ว!");
 
         const orderItems = cartItems.map((item) =>{
-          console.log(item)
+          //console.log(item)
           return{
             product_id:item.id,
             quantity:Number(item.quantity),
@@ -264,7 +259,7 @@ function ProductComponent() {
         spacing={2}
         sx={{ marginTop: "100px", marginLeft: "10px", paddingRight: "50px" }}
       >
-        <Grid item xs={12} sm={6} md={8} sx={{ flex: "1 1 70%" }}>
+        <Grid item xs={12} sm={6} md={8} sx={{ flex: "1 1 70%" }} key={product.id}>
           {/* <h4>สินค้าทั้งหมด</h4> */}
           <Grid container spacing={2}>
             {product
@@ -272,11 +267,11 @@ function ProductComponent() {
               .map((product, index) => (
                 <Grid
                   item
+                  key={index}
                   xs={12}
                   sm={6}
                   md={4}
                   lg={3}
-                  key={index}
                   sx={{
                     display: "flex",
                     justifyContent: {
@@ -342,9 +337,6 @@ function ProductComponent() {
             <div  style={{ position: "relative" }}>
             <PDFViewer width="100%" height="500px">
               <Receipt
-                userlogin={userlogin}
-                cartItems={cartItems}
-                total={calculateDiscountedTotal()}
               />
             </PDFViewer>
               {/* ปุ่มปิด PDFViewer */}
@@ -364,15 +356,15 @@ function ProductComponent() {
               <hr />
 
               <List>
-                {cartItems.map((item, index) => {
+                {cartItems.map((item,index) => {
                   // console.log(item)
 
                   return (
-                    <>
+                    <div key={index}>
                       <ListItem
                         alignItems="center"
                         style={{ display: "flex", alignItems: "center" }}
-                        key={index}
+
                       >
                         <ListItemText
                           style={{ flex: 1 }}
@@ -418,7 +410,7 @@ function ProductComponent() {
                       </ListItem>
 
                       <hr />
-                    </>
+                    </div>
                   );
                 })}
               </List>
@@ -461,17 +453,14 @@ function ProductComponent() {
                   >
                     <Grid item xs={3} sm={2}>
                       <TextField
-                        label="ส่วนลด "
-                        // label="ส่วนลด %"
+                        label="ส่วนลด %"
                         type="number"
                         value={discount}
                         onChange={(e) => {
                           const newDiscount = parseFloat(e.target.value);
+                          if (newDiscount >= 0 && newDiscount <= 100) {
                             setDiscount(newDiscount);
-                        
-                          // if (newDiscount >= 0 && newDiscount <= 100) {
-                          //   setDiscount(newDiscount);
-                          // }
+                          }
                         }}
                         inputProps={{
                           style: { textAlign: "right", fontSize: "12px" },

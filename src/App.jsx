@@ -16,12 +16,16 @@ import ProductComponent from './components/ProductComponent'
 import AdminHome from './components/Admin/AdminHome'
 import EditProducts from './components/Admin/EditProducts'
 import CreateProduct from './components/Admin/CreateProduct'
+import AddStock from './components/Admin/AddStock'
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+
   
   useEffect(() => {
     const check = localStorage.getItem("check");
+
     if (check === '1') {
       setIsLoggedIn(true);
     }
@@ -41,8 +45,9 @@ function App() {
         <Route path="/product" element={ <ProductComponent />} />
         <Route path="/productedit/:id" element={ <EditProducts />} />
         <Route path="/createproduct" element={ <CreateProduct />} />
+        <Route path="/addstock" element={ <AddStock />} />
         {/* {check === '1' ? <Route path="/product" element={ <Product />} /> : <Route path="/home" element={ <HomeComponent />} />} */}
-        <Route path="/profile" element={ <ProfileComponent setIsLoggedIn={setIsLoggedIn} isLoggedIn={isLoggedIn} />} />
+        <Route path="/profile" element={ <ProfileComponent setIsLoggedIn={setIsLoggedIn} isLoggedIn={isLoggedIn}  />} />
       </Routes>
     </div>
 

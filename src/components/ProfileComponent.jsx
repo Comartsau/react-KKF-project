@@ -52,7 +52,7 @@ function ProfileComponent({setIsLoggedIn , isLoggedIn}) {
         };
         console.log(token)
 
-        fetch("http://192.168.1.96:8000/profile", requestOptions)
+        fetch("http://26.125.18.207:8000/profile", requestOptions)
       .then((response) => response.json())
       .then((result) => {
         if (result.status === "ok") {
@@ -137,7 +137,7 @@ function ProfileComponent({setIsLoggedIn , isLoggedIn}) {
           redirect: 'follow'
         };
           
-        fetch("http://192.168.1.96:8000/test", requestOptions)
+        fetch("http://26.125.18.207:8000/test", requestOptions)
           .then(response => response.json())
           .then(result => {
             if (result.status === 'ok') {

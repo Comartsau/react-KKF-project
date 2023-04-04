@@ -30,7 +30,6 @@ function LonigForm({ setIsLoggedIn, handleClose }) {
     myHeaders.append("Content-Type", "application/json");
 
     let raw = JSON.stringify({
-      // "username": inputs.username,
       email: inputs.email,
       password: inputs.password,
       expiresIn: 600000,
@@ -43,8 +42,7 @@ function LonigForm({ setIsLoggedIn, handleClose }) {
       redirect: "follow",
     };
 
-    // fetch("https://www.melivecode.com/api/login", requestOptions)
-    fetch("http://192.168.1.96:8000/login", requestOptions)
+    fetch("http://26.125.18.207:8000/login", requestOptions)
       .then((response) => response.json())
       .then((result) => {
         console.log(result);
